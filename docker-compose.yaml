@@ -40,10 +40,11 @@ services:
         - MINIO_CONSOLE_ADDRESS=${MINIO_CONSOLE_ADDRESS}
       command: server ${DB_MIN_IO_IN_CONTAINER}
       healthcheck:
-        test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-        interval: 30s
-        timeout: 20s
-        retries: 3
+        test: timeout 5s bash -c ':> /dev/tcp/127.0.0.1/9000' || exit 1
+        interval: 5s
+        retries: 1
+        start_period: 5s
+        timeout: 5s
 
     tracking-server:
         restart: always
